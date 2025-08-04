@@ -13,10 +13,11 @@ import { type TouristSpot } from './types'
 interface SortableSpotProps {
   spot: TouristSpot
   dayIndex: number
-  onSpotClick: (dayIndex: number) => void
+  spotIndex: number
+  onSpotClick: (dayIndex: number, spotIndex: number) => void
 }
 
-export function SortableSpot({ spot, dayIndex, onSpotClick }: SortableSpotProps) {
+export function SortableSpot({ spot, dayIndex, spotIndex, onSpotClick }: SortableSpotProps) {
   const {
     attributes,
     listeners,
@@ -51,7 +52,7 @@ export function SortableSpot({ spot, dayIndex, onSpotClick }: SortableSpotProps)
               <Clock className="h-4 w-4" />
               {spot.duration}分
             </div>
-            <Button variant="outline" size="sm" onClick={() => onSpotClick(dayIndex)}>
+            <Button variant="outline" size="sm" onClick={() => onSpotClick(dayIndex, spotIndex)}>
               <Edit className="h-4 w-4 mr-1" />
               変更
             </Button>

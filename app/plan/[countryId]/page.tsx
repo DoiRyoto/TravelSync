@@ -8,6 +8,7 @@ import { arrayMove } from "@dnd-kit/sortable"
 // Components
 import { Header } from "@/components/layout/header"
 import { DayPlan } from "./_components/day-plan"
+import { SpotSearchDialog } from "./_components/spot-search-dialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -16,7 +17,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Info, XCircle, ArrowLeft, RotateCcw, Route, Map } from "lucide-react"
 
 // Types and utilities
-import { TravelPlan } from "./_components/types"
+import { TravelPlan, TouristSpot } from "./_components/types"
 import { generateSimpleTravelPlan } from "./_components/generate-simple-plan"
 
 interface PlanPageProps {
@@ -34,6 +35,10 @@ export default function PlanPage({ params }: PlanPageProps) {
   const [isRouteSearching, setIsRouteSearching] = useState(false)
   const [transportationOpenStates, setTransportationOpenStates] = useState<{[key: string]: boolean}>({})
   const [hasChanges, setHasChanges] = useState(false)
+  
+  // 観光地変更ダイアログの状態
+  const [isSpotDialogOpen, setIsSpotDialogOpen] = useState(false)
+  const [selectedSpotInfo, setSelectedSpotInfo] = useState<{dayIndex: number, spotIndex: number, spot: TouristSpot} | null>(null)
 
   // プラン生成のためのuseEffect
   useEffect(() => {
@@ -111,10 +116,27 @@ export default function PlanPage({ params }: PlanPageProps) {
   }
 
 
-  const handleTouristSpotClick = (spotIndex: number) => {
-    // 将来的に観光地変更機能が実装される場合に備えて変更状態を記録
+  const handleTouristSpotClick = (dayIndex: number, spotIndex: number) => {
+    if (!travelPlan) return
+    
+    const spot = travelPlan.days[dayIndex].spots[spotIndex]
+    setSelectedSpotInfo({ dayIndex, spotIndex, spot })
+    setIsSpotDialogOpen(true)
+  }
+
+  // 観光地選択処理
+  const handleSpotSelect = (newSpot: TouristSpot) => {
+    if (!travelPlan || !selectedSpotInfo) return
+    
+    const updatedPlan = { ...travelPlan }
+    updatedPlan.days[selectedSpotInfo.dayIndex].spots[selectedSpotInfo.spotIndex] = {
+      ...newSpot,
+      id: selectedSpotInfo.spot.id // 既存のIDを保持してドラッグアンドドロップが正常に動作するようにする
+    }
+    
+    setTravelPlan(updatedPlan)
     setHasChanges(true)
-    router.push(`/spot/${params.countryId}/${spotIndex}`)
+    setSelectedSpotInfo(null)
   }
 
 
@@ -214,6 +236,17 @@ export default function PlanPage({ params }: PlanPageProps) {
             ))}
           </section>
         </div>
+        
+        {/* 観光地変更ダイアログ */}
+        {selectedSpotInfo && (
+          <SpotSearchDialog
+            open={isSpotDialogOpen}
+            onOpenChange={setIsSpotDialogOpen}
+            countryId={params.countryId}
+            currentSpot={selectedSpotInfo.spot}
+            onSpotSelect={handleSpotSelect}
+          />
+        )}
       </main>
     </div>
   )

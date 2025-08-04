@@ -30,7 +30,7 @@ interface DayPlanProps {
   onToggleDay: (dayIndex: number) => void
   onDragEnd: (event: DragEndEvent, dayIndex: number) => void
   onToggleTransportation: (transportId: string) => void
-  onSpotClick: (dayIndex: number) => void
+  onSpotClick: (dayIndex: number, spotIndex: number) => void
 }
 
 export function DayPlan({ 
@@ -80,7 +80,12 @@ export function DayPlan({
               <SortableContext items={day.spots.map(spot => spot.id)} strategy={verticalListSortingStrategy}>
                 {day.spots.map((spot, spotIndex) => (
                   <div key={spot.id}>
-                    <SortableSpot spot={spot} dayIndex={spotIndex} onSpotClick={onSpotClick} />
+                    <SortableSpot 
+                      spot={spot} 
+                      dayIndex={dayIndex} 
+                      spotIndex={spotIndex} 
+                      onSpotClick={onSpotClick} 
+                    />
                     {spotIndex < day.spots.length - 1 && day.transportations[spotIndex] && (
                       <TransportationCard 
                         transport={day.transportations[spotIndex]} 
