@@ -4,7 +4,9 @@ import type { App } from '@/app/api/[...elysia]/route'
 // Create Eden treaty client
 const baseUrl = process.env.NODE_ENV === 'production' 
   ? process.env.NEXT_PUBLIC_VERCEL_URL || 'https://travel-sync-kappa.vercel.app/'
-  : 'http://localhost:3000'
+  : typeof window !== 'undefined' 
+    ? window.location.origin  // Use same origin to avoid CORS in browser
+    : 'http://localhost:3000'
 
 export const api = treaty<App>(baseUrl)
 

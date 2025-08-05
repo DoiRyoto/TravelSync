@@ -15,7 +15,12 @@ import {
 } from '@/lib/travel-options'
 
 const app = new Elysia({ prefix: '/api' })
-  .use(cors())
+  .use(cors({
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+    credentials: true
+  }))
   .use(swagger({
     documentation: {
       info: {
@@ -200,6 +205,7 @@ export const POST = app.handle
 export const PUT = app.handle
 export const DELETE = app.handle
 export const PATCH = app.handle
+export const OPTIONS = app.handle
 
 // Export the app type for Eden treaty
 export type App = typeof app
