@@ -1,32 +1,11 @@
-// Simple fetch-based API client for TravelSync
+import { treaty } from '@elysiajs/eden'
+import type { App } from '@/app/api/[...elysia]/route'
+
+// Create Eden treaty client
 const baseUrl = process.env.NODE_ENV === 'production' 
   ? process.env.NEXT_PUBLIC_VERCEL_URL || 'https://travel-sync-kappa.vercel.app/'
   : 'http://localhost:3000'
 
-export const api = {
-  baseUrl,
-  
-  async get(path: string) {
-    const response = await fetch(`${baseUrl}${path}`)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return response.json()
-  },
-  
-  async post(path: string, data: any) {
-    const response = await fetch(`${baseUrl}${path}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return response.json()
-  }
-}
+export const api = treaty<App>(baseUrl)
 
 export type ApiClient = typeof api

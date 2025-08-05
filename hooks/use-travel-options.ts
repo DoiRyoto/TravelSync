@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { api } from '@/lib/api-client'
 
 // Define types for travel options based on existing structure
 export interface TravelerType {
@@ -85,13 +86,10 @@ export function useTravelOptions() {
         setLoading(true)
         setError(null)
         
-        const response = await fetch('/api/travel-options')
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        const response = await api.api['travel-options'].get()
+        if (response.data) {
+          setOptions(response.data)
         }
-        
-        const data = await response.json()
-        setOptions(data)
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch travel options'))
         setOptions(null)
@@ -214,13 +212,10 @@ export function useSeasons() {
         setLoading(true)
         setError(null)
         
-        const response = await fetch('/api/travel-options/seasons')
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        const response = await api.api['travel-options'].seasons.get()
+        if (response.data) {
+          setSeasons(response.data.seasons || [])
         }
-        
-        const data = await response.json()
-        setSeasons(data.seasons || [])
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch seasons'))
         setSeasons([])
@@ -246,13 +241,10 @@ export function useDurationOptions() {
         setLoading(true)
         setError(null)
         
-        const response = await fetch('/api/travel-options/durations')
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        const response = await api.api['travel-options'].durations.get()
+        if (response.data) {
+          setDurations(response.data.durations || [])
         }
-        
-        const data = await response.json()
-        setDurations(data.durations || [])
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch durations'))
         setDurations([])

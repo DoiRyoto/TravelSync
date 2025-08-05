@@ -200,3 +200,6 @@ export const POST = app.handle
 export const PUT = app.handle
 export const DELETE = app.handle
 export const PATCH = app.handle
+
+// Export the app type for Eden treaty
+export type App = typeof app

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { api } from '@/lib/api-client'
 
 // Define the country type based on our existing data structure
 export interface Country {
@@ -19,13 +20,10 @@ export function useCountries() {
         setLoading(true)
         setError(null)
         
-        const response = await fetch('/api/countries')
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        const response = await api.api.countries.get()
+        if (response.data) {
+          setCountries(response.data.countries || [])
         }
-        
-        const data = await response.json()
-        setCountries(data.countries || [])
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch countries'))
         // Fallback to empty array on error to maintain component functionality
@@ -59,13 +57,10 @@ export function useCountry(countryId: string | null) {
         setLoading(true)
         setError(null)
         
-        const response = await fetch(`/api/countries/${countryId}`)
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+        const response = await api.api.countries({ id: countryId }).get()
+        if (response.data) {
+          setCountry(response.data.country || null)
         }
-        
-        const data = await response.json()
-        setCountry(data.country || null)
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch country'))
         setCountry(null)
