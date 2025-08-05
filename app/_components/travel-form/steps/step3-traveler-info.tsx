@@ -5,7 +5,7 @@ import {
   Users, Star, TrendingUp, User, Heart, UserPlus, Briefcase,
   GraduationCap, Zap, Trophy, Crown, Sprout, TreePine, Trees
 } from "lucide-react"
-import { TRAVELER_TYPES, AGE_GROUPS, EXPERIENCE_LEVELS } from "@/lib/travel-options"
+import { useTravelerTypes, useAgeGroups, useExperienceLevels } from "@/hooks/use-travel-options"
 
 const iconMap = {
   User, Heart, Users, UserPlus, Briefcase,
@@ -36,6 +36,62 @@ export function Step3TravelerInfo({
   ageGroupError,
   experienceLevelError
 }: Step3TravelerInfoProps) {
+  const { travelerTypes, loading: travelerTypesLoading, error: travelerTypesError } = useTravelerTypes()
+  const { ageGroups, loading: ageGroupsLoading, error: ageGroupsError } = useAgeGroups()
+  const { experienceLevels, loading: experienceLevelsLoading, error: experienceLevelsError } = useExperienceLevels()
+
+  // Show loading state
+  if (travelerTypesLoading || ageGroupsLoading || experienceLevelsLoading) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <Users className="h-5 w-5 text-slate-600" />
+            旅行者情報
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            あなたの旅行スタイルについて教えてください
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-slate-700">旅行タイプ</Label>
+            <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-16 bg-slate-200 rounded-md"></div>
+              ))}
+            </div>
+          </div>
+          <p className="text-sm text-slate-500">旅行者オプションを読み込み中...</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show error state
+  if (travelerTypesError || ageGroupsError || experienceLevelsError) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <Users className="h-5 w-5 text-slate-600" />
+            旅行者情報
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            あなたの旅行スタイルについて教えてください
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">
+              旅行者オプションの読み込みに失敗しました。ページを再読み込みしてください。
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="border border-slate-200 bg-white shadow-sm">
       <CardHeader>
@@ -52,7 +108,7 @@ export function Step3TravelerInfo({
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700">旅行タイプ</Label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {TRAVELER_TYPES.map((type) => {
+            {travelerTypes.map((type) => {
               const IconComponent = iconMap[type.icon as keyof typeof iconMap]
               return (
                 <Button
@@ -83,7 +139,7 @@ export function Step3TravelerInfo({
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700">年齢層</Label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
-            {AGE_GROUPS.map((age) => {
+            {ageGroups.map((age) => {
               const IconComponent = iconMap[age.icon as keyof typeof iconMap]
               return (
                 <Button
@@ -111,7 +167,7 @@ export function Step3TravelerInfo({
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700">海外旅行経験</Label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {EXPERIENCE_LEVELS.map((level) => {
+            {experienceLevels.map((level) => {
               const IconComponent = iconMap[level.icon as keyof typeof iconMap]
               return (
                 <Button
@@ -147,7 +203,7 @@ export function Step3TravelerInfo({
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-slate-500" />
                   <span className="text-xs">
-                    旅行タイプ: {TRAVELER_TYPES.find(t => t.value === travelerType)?.label}
+                    旅行タイプ: {travelerTypes.find(t => t.value === travelerType)?.label}
                   </span>
                 </div>
               )}
@@ -155,7 +211,7 @@ export function Step3TravelerInfo({
                 <div className="flex items-center gap-2">
                   <Star className="h-4 w-4 text-slate-500" />
                   <span className="text-xs">
-                    年齢層: {AGE_GROUPS.find(a => a.value === ageGroup)?.label}
+                    年齢層: {ageGroups.find(a => a.value === ageGroup)?.label}
                   </span>
                 </div>
               )}
@@ -163,7 +219,7 @@ export function Step3TravelerInfo({
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-slate-500" />
                   <span className="text-xs">
-                    経験レベル: {EXPERIENCE_LEVELS.find(e => e.value === experienceLevel)?.label}
+                    経験レベル: {experienceLevels.find(e => e.value === experienceLevel)?.label}
                   </span>
                 </div>
               )}

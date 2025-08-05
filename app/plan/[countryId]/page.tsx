@@ -19,11 +19,12 @@ import { Info, XCircle, ArrowLeft, RotateCcw, Route, Map } from "lucide-react"
 // Types and utilities
 import { TravelPlan, TouristSpot } from "./_components/types"
 import { generateSimpleTravelPlan } from "./_components/generate-simple-plan"
+import { useCountries } from "@/hooks/use-countries"
 
 interface PlanPageProps {
-  params: {
+  params: Promise<{
     countryId: string
-  }
+  }>
 }
 
 export default function PlanPage({ params }: PlanPageProps) {
@@ -31,6 +32,15 @@ export default function PlanPage({ params }: PlanPageProps) {
   const [travelPlan, setTravelPlan] = useState<TravelPlan | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [countryId, setCountryId] = useState<string | null>(null)
+  const { countries, loading: countriesLoading, error: countriesError } = useCountries()
+
+  // Resolve params Promise
+  useEffect(() => {
+    params.then(resolvedParams => {
+      setCountryId(resolvedParams.countryId)
+    })
+  }, [params])
 
   const [isRouteSearching, setIsRouteSearching] = useState(false)
   const [transportationOpenStates, setTransportationOpenStates] = useState<{[key: string]: boolean}>({})
@@ -42,12 +52,19 @@ export default function PlanPage({ params }: PlanPageProps) {
 
   // プラン生成のためのuseEffect
   useEffect(() => {
+    if (!countryId || countriesLoading) return
+    if (countriesError) {
+      setError("国データの読み込みに失敗しました。")
+      setLoading(false)
+      return
+    }
+
     const generatePlan = async () => {
       try {
         setLoading(true)
         // シンプルなプラン生成（非同期処理をシミュレート）
         await new Promise(resolve => setTimeout(resolve, 500))
-        const plan = generateSimpleTravelPlan(params.countryId)
+        const plan = generateSimpleTravelPlan(countryId, countries)
         setTravelPlan(plan)
       } catch (err) {
         console.error("Error generating travel plan:", err)
@@ -58,7 +75,7 @@ export default function PlanPage({ params }: PlanPageProps) {
     }
 
     generatePlan()
-  }, [params.countryId])
+  }, [countryId, countries, countriesLoading, countriesError])
 
   // ドラッグアンドドロップ処理
   const handleDragEnd = (event: DragEndEvent, dayIndex: number) => {
@@ -242,7 +259,7 @@ export default function PlanPage({ params }: PlanPageProps) {
           <SpotSearchDialog
             open={isSpotDialogOpen}
             onOpenChange={setIsSpotDialogOpen}
-            countryId={params.countryId}
+            countryId={countryId || ''}
             currentSpot={selectedSpotInfo.spot}
             onSpotSelect={handleSpotSelect}
           />
