@@ -19,6 +19,8 @@ interface SpotSearchDialogProps {
 
 // モック観光地データ（実際の実装では API から取得）
 const getMockSpots = (countryId: string): TouristSpot[] => {
+  console.log('getMockSpots called with countryId:', countryId)
+  
   const spotsByCountry: { [key: string]: TouristSpot[] } = {
     jp: [
       {
@@ -124,7 +126,11 @@ const getMockSpots = (countryId: string): TouristSpot[] => {
     ]
   }
   
-  return spotsByCountry[countryId] || []
+  const result = spotsByCountry[countryId] || []
+  console.log('getMockSpots result:', result.length, 'spots found for', countryId)
+  console.log('Available countries:', Object.keys(spotsByCountry))
+  
+  return result
 }
 
 export function SpotSearchDialog({ 
@@ -137,9 +143,11 @@ export function SpotSearchDialog({
   const [searchQuery, setSearchQuery] = useState("")
   
   console.log('SpotSearchDialog currentSpot:', currentSpot)
+  console.log('SpotSearchDialog countryId:', countryId)
   
   const allSpots = useMemo(() => {
     const spots = getMockSpots(countryId)
+    console.log('SpotSearchDialog allSpots:', spots.length, 'spots for country:', countryId)
     return spots
   }, [countryId])
   
@@ -154,6 +162,7 @@ export function SpotSearchDialog({
     return popularSpots
   }, [allSpots, currentSpot.id])
   
+
   const filteredSpots = useMemo(() => {
     if (!searchQuery.trim()) return allSpots
     
@@ -189,6 +198,10 @@ export function SpotSearchDialog({
           <DialogTitle>観光地を変更</DialogTitle>
           <DialogDescription>
             現在選択中: {currentSpot.name} → 新しい観光地を選択してください
+            <br />
+            <span className="text-xs text-muted-foreground">
+              デバッグ: 国ID={countryId}, 利用可能スポット数={allSpots.length}
+            </span>
           </DialogDescription>
         </DialogHeader>
         
@@ -202,6 +215,7 @@ export function SpotSearchDialog({
               className="pl-9"
             />
           </div>
+          
           
           <ScrollArea className="h-[400px]">
             <div className="space-y-4">
@@ -254,9 +268,29 @@ export function SpotSearchDialog({
 
               {/* 検索結果または全スポット */}
               <div className="space-y-3">
-                {displaySpots.length === 0 && searchQuery.trim() ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    検索結果が見つかりませんでした
+                {searchQuery.trim() && (
+                  <div className="text-sm font-medium text-primary">
+                    検索結果 ({displaySpots.length}件)
+                  </div>
+                )}
+                
+                {allSpots.length === 0 && !searchQuery.trim() ? (
+                  <div className="text-center py-8 space-y-4">
+                    <div className="text-muted-foreground">
+                      この国（{countryId}）の観光地データがありません
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      利用可能な国: jp (日本), fr (フランス), us (アメリカ)
+                    </div>
+                  </div>
+                ) : displaySpots.length === 0 && searchQuery.trim() ? (
+                  <div className="text-center py-8 space-y-2">
+                    <div className="text-muted-foreground">
+                      検索結果が見つかりませんでした
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      別のキーワードで検索してみてください
+                    </div>
                   </div>
                 ) : (
                   displaySpots.map((spot) => (

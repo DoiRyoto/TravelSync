@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { 
   ChevronDown,
@@ -49,24 +48,22 @@ export function TransportationCard({ transport, isOpen, onToggle }: Transportati
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <Card className="mt-2 border-l-4 border-l-blue-500">
-            <CardContent className="p-4">
-              <div className="text-sm space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">出発:</span>
-                  <span>{transport.from}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">到着:</span>
-                  <span>{transport.to}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">詳細:</span>
-                  <span>{transport.details}</span>
-                </div>
+          <div className="mt-2 bg-slate-50/50 dark:bg-slate-800/30 rounded-lg p-4 ml-2 border-l-2 border-slate-200 dark:border-slate-700">
+            <div className="text-sm space-y-2 text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-foreground">出発:</span>
+                <span>{transport.from}</span>
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-foreground">到着:</span>
+                <span>{transport.to}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-foreground">詳細:</span>
+                <span>{transport.details}</span>
+              </div>
+            </div>
+          </div>
         </CollapsibleContent>
       </Collapsible>
     </div>

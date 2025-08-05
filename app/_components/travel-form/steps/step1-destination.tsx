@@ -118,26 +118,38 @@ export function Step1Destination({
               <Input
                 id="destination"
                 type="text"
-                placeholder="国名または地域名を入力してください"
+                placeholder="国名または地域名を入力"
                 value={destinationInput}
                 onChange={(e) => handleInputChange(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
-                className="pl-10 border-slate-200 focus:border-slate-400"
+                className="pl-10 border-slate-200 focus:border-slate-400 min-h-[48px] text-base md:text-sm"
+                autoComplete="off"
+                role="combobox"
+                aria-expanded={showSuggestions && filteredCountries.length > 0}
+                aria-haspopup="listbox"
+                aria-describedby={error ? "destination-error" : undefined}
               />
             </div>
             
             {showSuggestions && filteredCountries.length > 0 && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                {filteredCountries.map((country) => (
+              <div 
+                className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                role="listbox"
+                aria-label="目的地の選択肢"
+              >
+                {filteredCountries.map((country, index) => (
                   <Button
                     key={country.id}
                     variant="ghost"
-                    className="w-full justify-start p-3 h-auto text-left hover:bg-slate-50 text-slate-700"
+                    className="w-full justify-start p-4 min-h-[56px] h-auto text-left hover:bg-slate-50 focus:bg-slate-100 text-slate-700 rounded-none first:rounded-t-md last:rounded-b-md"
                     onClick={() => handleCountrySelect(country)}
+                    role="option"
+                    aria-selected={destination === country.id}
+                    tabIndex={-1}
                   >
-                    <div>
-                      <div className="font-medium text-sm">{country.name}</div>
-                      <div className="text-xs text-slate-500">{country.continent}</div>
+                    <div className="w-full">
+                      <div className="font-medium text-base md:text-sm">{country.name}</div>
+                      <div className="text-sm md:text-xs text-slate-500 mt-1">{country.continent}</div>
                     </div>
                   </Button>
                 ))}
@@ -145,13 +157,17 @@ export function Step1Destination({
             )}
           </div>
           {error && (
-            <p className="text-sm text-red-500">{error}</p>
+            <p id="destination-error" className="text-sm text-red-500 flex items-center gap-1" role="alert">
+              <span aria-hidden="true">⚠️</span>
+              {error}
+            </p>
           )}
         </div>
 
         {destination && (
-          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="p-4 bg-slate-50 rounded-lg border border-slate-200" role="status" aria-live="polite">
             <div className="flex items-center gap-2">
+
               <MapPin className="h-4 w-4 text-slate-600" />
               <span className="font-medium text-slate-700 text-sm">選択済み:</span>
               <span className="text-slate-800 text-sm">
