@@ -1,4 +1,4 @@
-// File: /Users/doi-ryoto/Desktop/Programming/travel-sync/app/layout.tsx
+// File: /Users/h_shiohata/Projects/DoiRyoto/TravelSync/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
