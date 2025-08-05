@@ -71,24 +71,24 @@ export function Step5Confirmation({
       <CardContent className="space-y-6">
         {/* 基本情報 */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-green-900 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-purple-900 flex items-center gap-2">
             <MapPin className="h-5 w-5" />
             基本情報
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-1">
-                <MapPin className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">目的地</span>
+                <MapPin className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">目的地</span>
               </div>
               <div className="text-lg font-semibold">{destination?.name}</div>
               <div className="text-sm text-muted-foreground">{destination?.continent}</div>
             </div>
             
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-1">
-                <Calendar className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">旅行時期</span>
+                <Calendar className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">旅行時期</span>
               </div>
               <div className="text-lg font-semibold flex items-center gap-2">
                 <span>{season?.icon}</span>
@@ -96,18 +96,18 @@ export function Step5Confirmation({
               </div>
             </div>
             
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-1">
-                <Clock className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">旅行期間</span>
+                <Clock className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">旅行期間</span>
               </div>
               <div className="text-lg font-semibold">{duration?.label}</div>
             </div>
             
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-1">
-                <Users className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">旅行タイプ</span>
+                <Users className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">旅行タイプ</span>
               </div>
               <div className="text-lg font-semibold flex items-center gap-2">
                 <span>{travelerType?.icon}</span>
@@ -121,15 +121,15 @@ export function Step5Confirmation({
 
         {/* 旅行者情報 */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-green-900 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-purple-900 flex items-center gap-2">
             <Users className="h-5 w-5" />
             旅行者情報
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-1">
-                <Star className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">年齢層</span>
+                <Star className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">年齢層</span>
               </div>
               <div className="text-lg font-semibold flex items-center gap-2">
                 <span>{ageGroup?.icon}</span>
@@ -137,10 +137,10 @@ export function Step5Confirmation({
               </div>
             </div>
             
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">旅行経験</span>
+                <TrendingUp className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">旅行経験</span>
               </div>
               <div className="text-lg font-semibold flex items-center gap-2">
                 <span>{experienceLevel?.icon}</span>
@@ -154,22 +154,22 @@ export function Step5Confirmation({
 
         {/* 旅行スタイル */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-green-900 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-purple-900 flex items-center gap-2">
             <Target className="h-5 w-5" />
             旅行スタイル
           </h3>
           
           <div className="space-y-3">
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-2">
-                <Target className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">旅行の目的</span>
+                <Target className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">旅行の目的</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.purposes.map(purpose => {
                   const purposeData = TRAVEL_PURPOSES.find(p => p.value === purpose)
                   return (
-                    <Badge key={purpose} className="bg-green-100 text-green-800 hover:bg-green-200">
+                    <Badge key={purpose} className="bg-purple-100 text-purple-800 hover:bg-purple-200">
                       <span className="mr-1">{purposeData?.icon}</span>
                       {purposeData?.label}
                     </Badge>
@@ -178,10 +178,10 @@ export function Step5Confirmation({
               </div>
             </div>
             
-            <div className="p-3 bg-white rounded-lg border border-green-200">
+            <div className="p-3 bg-white rounded-lg border border-purple-200">
               <div className="flex items-center gap-2 mb-2">
-                <Heart className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-sm text-green-900">興味のあること</span>
+                <Heart className="h-4 w-4 text-purple-600" />
+                <span className="font-medium text-sm text-purple-900">興味のあること</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.interests.map(interest => {
@@ -197,10 +197,10 @@ export function Step5Confirmation({
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 bg-white rounded-lg border border-green-200">
+              <div className="p-3 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center gap-2 mb-1">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                  <span className="font-medium text-sm text-green-900">予算レベル</span>
+                  <DollarSign className="h-4 w-4 text-purple-600" />
+                  <span className="font-medium text-sm text-purple-900">予算レベル</span>
                 </div>
                 <div className="text-lg font-semibold flex items-center gap-2">
                   <span>{budgetLevel?.icon}</span>
@@ -209,10 +209,10 @@ export function Step5Confirmation({
                 <div className="text-sm text-muted-foreground">{budgetLevel?.range}</div>
               </div>
               
-              <div className="p-3 bg-white rounded-lg border border-green-200">
+              <div className="p-3 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center gap-2 mb-1">
-                  <BookOpen className="h-4 w-4 text-green-600" />
-                  <span className="font-medium text-sm text-green-900">文化情報</span>
+                  <BookOpen className="h-4 w-4 text-purple-600" />
+                  <span className="font-medium text-sm text-purple-900">文化情報</span>
                 </div>
                 <div className="text-lg font-semibold flex items-center gap-2">
                   <span>{culturalLevel?.icon}</span>
@@ -228,8 +228,8 @@ export function Step5Confirmation({
           <>
             <Separator />
             <div className="space-y-3">
-              <h3 className="text-lg font-semibold text-green-900">特別な要望・注意事項</h3>
-              <div className="p-3 bg-white rounded-lg border border-green-200">
+              <h3 className="text-lg font-semibold text-purple-900">特別な要望・注意事項</h3>
+              <div className="p-3 bg-white rounded-lg border border-purple-200">
                 <p className="text-sm">{formData.specialRequests}</p>
               </div>
             </div>
@@ -243,7 +243,7 @@ export function Step5Confirmation({
             onClick={onSubmit}
             disabled={loading}
             size="lg"
-            className="w-full md:w-auto bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-6 px-8 text-lg font-semibold"
+            className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-6 px-8 text-lg font-semibold"
           >
             {loading ? (
               <>

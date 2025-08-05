@@ -91,7 +91,7 @@ export function Step4TravelStyle({
                   disabled={!canSelect}
                   className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all ${
                     isSelected
-                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                       : canSelect
                         ? "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                         : "opacity-50 cursor-not-allowed"
@@ -137,7 +137,7 @@ export function Step4TravelStyle({
                   disabled={!canSelect}
                   className={`h-auto p-3 flex flex-col items-center gap-1 transition-all ${
                     isSelected
-                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                       : canSelect
                         ? "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                         : "opacity-50 cursor-not-allowed"
@@ -170,7 +170,7 @@ export function Step4TravelStyle({
                   variant={budgetLevel === budget.value ? "default" : "outline"}
                   className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all ${
                     budgetLevel === budget.value
-                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                       : "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                   }`}
                   onClick={() => onBudgetLevelChange(budget.value)}
@@ -202,7 +202,7 @@ export function Step4TravelStyle({
                   variant={culturalLevel === level.value ? "default" : "outline"}
                   className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all ${
                     culturalLevel === level.value
-                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                       : "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                   }`}
                   onClick={() => onCulturalLevelChange(level.value)}

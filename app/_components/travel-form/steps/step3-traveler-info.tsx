@@ -60,7 +60,7 @@ export function Step3TravelerInfo({
                   variant={travelerType === type.value ? "default" : "outline"}
                   className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all ${
                     travelerType === type.value
-                      ? "bg-slate-900 hover:bg-slate-800 text-white border-slate-900"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground border-primary"
                       : "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                   }`}
                   onClick={() => onTravelerTypeChange(type.value)}
@@ -91,7 +91,7 @@ export function Step3TravelerInfo({
                   variant={ageGroup === age.value ? "default" : "outline"}
                   className={`h-auto p-3 flex flex-col items-center gap-1 transition-all ${
                     ageGroup === age.value
-                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                       : "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                   }`}
                   onClick={() => onAgeGroupChange(age.value)}
@@ -119,7 +119,7 @@ export function Step3TravelerInfo({
                   variant={experienceLevel === level.value ? "default" : "outline"}
                   className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all ${
                     experienceLevel === level.value
-                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                       : "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                   }`}
                   onClick={() => onExperienceLevelChange(level.value)}

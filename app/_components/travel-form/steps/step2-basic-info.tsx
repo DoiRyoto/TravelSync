@@ -77,7 +77,7 @@ export function Step2BasicInfo({
                 variant={duration === option.value ? "default" : "outline"}
                 className={`h-auto p-3 flex flex-col items-center gap-1 transition-all ${
                   duration === option.value 
-                    ? "bg-slate-900 hover:bg-slate-800 text-white" 
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground" 
                     : "border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"
                 }`}
                 onClick={() => onDurationChange(option.value)}

@@ -266,15 +266,17 @@ export default function HomePage() {
             </Alert>
           )}
 
-          <div className="flex justify-between pt-4">
+          <div className="flex justify-between pt-6 gap-4">
             {currentStep > 1 ? (
               <Button
                 variant="outline"
                 onClick={prevStep}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 min-h-[48px] px-6 text-base md:text-sm"
+                aria-label={`前のステップ（${FORM_STEPS[currentStep - 2]?.title}）に戻る`}
               >
-                <ArrowLeft className="w-4 h-4" />
-                前に戻る
+                <ArrowLeft className="w-5 h-5 md:w-4 md:h-4" />
+                <span className="hidden xs:inline">前に戻る</span>
+                <span className="xs:hidden">戻る</span>
               </Button>
             ) : (
               <div />
@@ -283,10 +285,12 @@ export default function HomePage() {
             {currentStep < FORM_STEPS.length && (
               <Button
                 onClick={nextStep}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 min-h-[48px] px-6 text-base md:text-sm"
+                aria-label={`次のステップ（${FORM_STEPS[currentStep]?.title}）に進む`}
               >
-                次に進む
-                <ArrowRight className="w-4 h-4" />
+                <span className="hidden xs:inline">次に進む</span>
+                <span className="xs:hidden">次へ</span>
+                <ArrowRight className="w-5 h-5 md:w-4 md:h-4" />
               </Button>
             )}
           </div>

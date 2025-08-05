@@ -54,48 +54,66 @@ export function DayPlan({
     <Card className="mb-6">
       <Collapsible open={day.isOpen} onOpenChange={() => onToggleDay(dayIndex)}>
         <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+          <CardHeader 
+            className="cursor-pointer hover:bg-gray-50/50 focus:bg-gray-50/50 transition-colors min-h-[64px] focus:outline-none rounded-lg"
+            role="button"
+            tabIndex={0}
+            aria-expanded={day.isOpen}
+            aria-controls={`day-content-${dayIndex}`}
+            aria-label={`${day.date}の予定を${day.isOpen ? '閉じる' : '開く'}`}
+          >
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-primary rounded-full flex-shrink-0" aria-hidden="true" />
+                <CardTitle className="text-lg md:text-xl">
                   {day.date}
                 </CardTitle>
+                <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  {day.spots.length}箇所
+                </span>
               </div>
               {day.isOpen ? (
-                <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                <ChevronUp className="h-5 w-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
               ) : (
-                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                <ChevronDown className="h-5 w-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
               )}
             </div>
           </CardHeader>
         </CollapsibleTrigger>
         
-        <CollapsibleContent>
-          <CardContent>
+        <CollapsibleContent id={`day-content-${dayIndex}`}>
+          <CardContent className="pt-0">
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
               onDragEnd={(event) => onDragEnd(event, dayIndex)}
             >
-              <SortableContext items={day.spots.map(spot => spot.id)} strategy={verticalListSortingStrategy}>
-                {day.spots.map((spot, spotIndex) => (
-                  <div key={spot.id}>
-                    <SortableSpot 
-                      spot={spot} 
-                      dayIndex={dayIndex} 
-                      spotIndex={spotIndex} 
-                      onSpotClick={onSpotClick} 
-                    />
-                    {spotIndex < day.spots.length - 1 && day.transportations[spotIndex] && (
-                      <TransportationCard 
-                        transport={day.transportations[spotIndex]} 
-                        isOpen={transportationOpenStates[day.transportations[spotIndex].id] || false}
-                        onToggle={onToggleTransportation}
+              <div className="relative">
+                <SortableContext items={day.spots.map(spot => spot.id)} strategy={verticalListSortingStrategy}>
+                  {day.spots.map((spot, spotIndex) => (
+                    <div key={spot.id}>
+                      <SortableSpot 
+                        spot={spot} 
+                        dayIndex={dayIndex} 
+                        spotIndex={spotIndex} 
+                        onSpotClick={onSpotClick} 
                       />
-                    )}
-                  </div>
-                ))}
-              </SortableContext>
+                      {spotIndex < day.spots.length - 1 && day.transportations[spotIndex] && (
+                        <div className="relative pl-6 sm:pl-16 pb-4">
+                          <div className="absolute left-4 sm:left-8 top-0 bottom-0 w-0.5 bg-border" />
+                          <div className="ml-2 sm:ml-4">
+                            <TransportationCard 
+                              transport={day.transportations[spotIndex]} 
+                              isOpen={transportationOpenStates[day.transportations[spotIndex].id] || false}
+                              onToggle={onToggleTransportation}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </SortableContext>
+              </div>
             </DndContext>
           </CardContent>
         </CollapsibleContent>
