@@ -10,19 +10,19 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.567 0.162 295.4);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.97 0.005 295.4);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.97 0.005 295.4);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.567 0.162 295.4);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -31,12 +31,12 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.567 0.162 295.4);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: oklch(0.97 0.005 295.4);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: oklch(0.567 0.162 295.4);
 }
 
 .dark {
@@ -46,19 +46,19 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
+  --primary: oklch(0.985 0.003 295.4);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.269 0.02 295.4);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.269 0.02 295.4);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --ring: oklch(0.567 0.162 295.4);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -66,12 +66,12 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: oklch(0.567 0.162 295.4);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(0.269 0.02 295.4);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar-ring: oklch(0.567 0.162 295.4);
 }
 
 @theme inline {
@@ -119,5 +119,70 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Nielsen原則に基づくモバイル最適化 */
+  /* 原則1: システム状態の可視性 - フォーカス状態を明確に */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+  
+  /* 原則2: システムと現実世界の一致 - 自然なタッチ領域 */
+  button, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="reset"] {
+    @apply min-h-[44px] /* Apple HIG推奨の最小タッチターゲット */;
+  }
+  
+  /* 原則3: ユーザーコントロール - タップフィードバック */
+  button:active, 
+  [role="button"]:active {
+    @apply scale-95 transition-transform duration-75;
+  }
+  
+  /* 原則4: 一貫性と標準 - 統一されたモバイルスタイル */
+  @media (max-width: 768px) {
+    /* モバイルでのテキストサイズ調整 */
+    .text-sm {
+      @apply text-base;
+    }
+    
+    /* モバイルでのパディング調整 */
+    .p-2 {
+      @apply p-3;
+    }
+    .p-3 {
+      @apply p-4;
+    }
+    
+    /* モバイルでのマージン調整 */
+    .gap-2 {
+      @apply gap-3;
+    }
+    .gap-3 {
+      @apply gap-4;
+    }
+  }
+  
+  /* 原則5: エラー防止 - 安全領域の確保 */
+  @supports (padding: max(0px)) {
+    .safe-area-inset {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+      padding-top: max(0.5rem, env(safe-area-inset-top));
+      padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    }
+  }
+  
+  /* 原則6: 記憶よりも認識 - 視覚的手がかり */
+  .interactive-element {
+    @apply transition-all duration-200 hover:bg-accent/50 focus:bg-accent/70;
+  }
+  
+  /* 原則10: ヘルプとドキュメント - トーストメッセージの改善 */
+  [role="alert"], [role="status"] {
+    @apply animate-in slide-in-from-top-2 duration-300;
   }
 }
