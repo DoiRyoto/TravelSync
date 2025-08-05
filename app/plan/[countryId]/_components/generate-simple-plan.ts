@@ -1,5 +1,4 @@
 import { type TravelPlan, type DayPlan, type TouristSpot } from './types'
-import { allCountries } from '@/lib/countries'
 
 // 大陸別観光地テンプレート
 const continentSpots = {
@@ -153,9 +152,21 @@ const countrySpecificSpots: Record<string, TouristSpot[]> = {
   ]
 }
 
+// Country interface matching our API data
+interface Country {
+  id: string
+  name: string
+  continent: string
+}
+
 // シンプルな旅行プラン生成関数（全ての国に対応）
-export function generateSimpleTravelPlan(countryId: string): TravelPlan {
-  const country = allCountries.find(c => c.id === countryId)
+export function generateSimpleTravelPlan(countryId: string, countries?: Country[]): TravelPlan {
+  // If no countries data provided, use fallback data
+  let country: Country | undefined
+  if (countries) {
+    country = countries.find(c => c.id === countryId)
+  }
+  
   const destination = country?.name || 'Unknown Destination'
   const continent = country?.continent || 'Asia'
 

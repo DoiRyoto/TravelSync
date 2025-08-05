@@ -17,26 +17,35 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Info, XCircle, ArrowLeft, RotateCcw, Route, Map } from 'lucide-react';
 
 // Types and utilities
-import { TravelPlan, TouristSpot } from './_components/types';
-import { generateSimpleTravelPlan } from './_components/generate-simple-plan';
+import { TravelPlan, TouristSpot } from "./_components/types"
+import { generateSimpleTravelPlan } from "./_components/generate-simple-plan"
+import { useCountries } from "@/hooks/use-countries"
 
 interface PlanPageProps {
   params: Promise<{
-    countryId: string;
-  }>;
+    countryId: string
+  }>
 }
 
 export default function PlanPage({ params }: PlanPageProps) {
-  const { countryId } = use(params);
-  const router = useRouter();
-  const [travelPlan, setTravelPlan] = useState<TravelPlan | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
+  const [travelPlan, setTravelPlan] = useState<TravelPlan | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [countryId, setCountryId] = useState<string | null>(null)
+  const { countries, loading: countriesLoading, error: countriesError } = useCountries()
 
-  const [isRouteSearching, setIsRouteSearching] = useState(false);
-  const [transportationOpenStates, setTransportationOpenStates] = useState<{ [key: string]: boolean }>({});
-  const [hasChanges, setHasChanges] = useState(false);
+  // Resolve params Promise
+  useEffect(() => {
+    params.then(resolvedParams => {
+      setCountryId(resolvedParams.countryId)
+    })
+  }, [params])
 
+  const [isRouteSearching, setIsRouteSearching] = useState(false)
+  const [transportationOpenStates, setTransportationOpenStates] = useState<{[key: string]: boolean}>({})
+  const [hasChanges, setHasChanges] = useState(false)
+  
   // 観光地変更ダイアログの状態
   const [isSpotDialogOpen, setIsSpotDialogOpen] = useState(false);
   const [selectedSpotInfo, setSelectedSpotInfo] = useState<{
@@ -47,13 +56,20 @@ export default function PlanPage({ params }: PlanPageProps) {
 
   // プラン生成のためのuseEffect
   useEffect(() => {
+    if (!countryId || countriesLoading) return
+    if (countriesError) {
+      setError("国データの読み込みに失敗しました。")
+      setLoading(false)
+      return
+    }
+
     const generatePlan = async () => {
       try {
         setLoading(true);
         // シンプルなプラン生成（非同期処理をシミュレート）
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const plan = generateSimpleTravelPlan(countryId);
-        setTravelPlan(plan);
+        await new Promise(resolve => setTimeout(resolve, 500))
+        const plan = generateSimpleTravelPlan(countryId, countries)
+        setTravelPlan(plan)
       } catch (err) {
         console.error('Error generating travel plan:', err);
         setError('旅行プランの生成中にエラーが発生しました。');
@@ -62,8 +78,8 @@ export default function PlanPage({ params }: PlanPageProps) {
       }
     };
 
-    generatePlan();
-  }, [countryId]);
+    generatePlan()
+  }, [countryId, countries, countriesLoading, countriesError])
 
   // ドラッグアンドドロップ処理
   const handleDragEnd = (event: DragEndEvent, dayIndex: number) => {
@@ -291,7 +307,7 @@ export default function PlanPage({ params }: PlanPageProps) {
           <SpotSearchDialog
             open={isSpotDialogOpen}
             onOpenChange={setIsSpotDialogOpen}
-            countryId={countryId}
+            countryId={countryId || ''}
             currentSpot={selectedSpotInfo.spot}
             onSpotSelect={handleSpotSelect}
           />

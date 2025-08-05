@@ -14,8 +14,8 @@ import { Step2BasicInfo } from "./_components/travel-form/steps/step2-basic-info
 import { Step3TravelerInfo } from "./_components/travel-form/steps/step3-traveler-info"
 import { Step4TravelStyle } from "./_components/travel-form/steps/step4-travel-style"
 import { Step5Confirmation } from "@/app/_components/travel-form/steps/step5-confirmation"
-import { allCountries } from "@/lib/countries"
-import { type TravelPurpose, type Interest } from "@/lib/travel-options"
+import { useCountries } from "@/hooks/use-countries"
+import { type TravelPurpose, type Interest } from "@/hooks/use-travel-options"
 import { StepIndicator } from "@/components/travel-form/step-indicator"
 
 const travelFormSchema = z.object({
@@ -48,6 +48,7 @@ export default function HomePage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [destinationInput, setDestinationInput] = useState("")
+  const { countries } = useCountries()
 
   const {
     handleSubmit,
@@ -161,7 +162,7 @@ export default function HomePage() {
             setDestinationInput={setDestinationInput}
             onDestinationSelect={(countryId) => {
               updateFormData({ destination: countryId })
-              const country = allCountries.find(c => c.id === countryId)
+              const country = countries.find(c => c.id === countryId)
               if (country) {
                 setDestinationInput(country.name)
               }

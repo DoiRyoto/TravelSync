@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Search, MapPin } from "lucide-react"
-import { allCountries } from "@/lib/countries"
+import { useCountries, type Country } from "@/hooks/use-countries"
 
 interface Step1DestinationProps {
   destination: string
@@ -24,24 +24,78 @@ export function Step1Destination({
   error
 }: Step1DestinationProps) {
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const { countries, loading, error: countriesError } = useCountries()
 
   const filteredCountries = useMemo(() => {
-    if (!destinationInput.trim()) return allCountries
+    if (!destinationInput.trim()) return countries
     const searchTerm = destinationInput.toLowerCase()
-    return allCountries.filter(country =>
+    return countries.filter(country =>
       country.name.toLowerCase().includes(searchTerm)
     )
-  }, [destinationInput])
+  }, [destinationInput, countries])
 
   const handleInputChange = (value: string) => {
     setDestinationInput(value)
     setShowSuggestions(true)
   }
 
-  const handleCountrySelect = (country: typeof allCountries[0]) => {
+  const handleCountrySelect = (country: Country) => {
     onDestinationSelect(country.id)
     setDestinationInput(country.name)
     setShowSuggestions(false)
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <MapPin className="h-5 w-5 text-slate-600" />
+            目的地を選択してください
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            どちらの国・地域に旅行されますか？
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <Label htmlFor="destination" className="text-sm font-medium text-slate-700">目的地</Label>
+            <div className="animate-pulse">
+              <div className="h-10 bg-slate-200 rounded-md"></div>
+            </div>
+            <p className="text-sm text-slate-500">国データを読み込み中...</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show error state
+  if (countriesError) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <MapPin className="h-5 w-5 text-slate-600" />
+            目的地を選択してください
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            どちらの国・地域に旅行されますか？
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <Label htmlFor="destination" className="text-sm font-medium text-slate-700">目的地</Label>
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600">
+                国データの読み込みに失敗しました。ページを再読み込みしてください。
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -113,10 +167,11 @@ export function Step1Destination({
         {destination && (
           <div className="p-4 bg-slate-50 rounded-lg border border-slate-200" role="status" aria-live="polite">
             <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-slate-600" />
-              <span className="font-medium text-slate-700 text-base md:text-sm">選択済み:</span>
-              <span className="text-slate-800 text-base md:text-sm font-medium">
-                {allCountries.find(c => c.id === destination)?.name}
+
+              <MapPin className="h-4 w-4 text-slate-600" />
+              <span className="font-medium text-slate-700 text-sm">選択済み:</span>
+              <span className="text-slate-800 text-sm">
+                {countries.find(c => c.id === destination)?.name}
               </span>
             </div>
           </div>

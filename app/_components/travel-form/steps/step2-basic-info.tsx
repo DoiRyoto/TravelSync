@@ -6,7 +6,7 @@ import {
   Calendar, Flower, Sun, Leaf, Snowflake, CalendarDays,
   Clock
 } from "lucide-react"
-import { SEASONS, DURATION_OPTIONS } from "@/lib/travel-options"
+import { useSeasons, useDurationOptions } from "@/hooks/use-travel-options"
 
 const iconMap = {
   Flower, Sun, Leaf, Snowflake, CalendarDays
@@ -29,6 +29,67 @@ export function Step2BasicInfo({
   seasonError,
   durationError
 }: Step2BasicInfoProps) {
+  const { seasons, loading: seasonsLoading, error: seasonsError } = useSeasons()
+  const { durations, loading: durationsLoading, error: durationsError } = useDurationOptions()
+
+  // Show loading state
+  if (seasonsLoading || durationsLoading) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <Calendar className="h-5 w-5 text-slate-600" />
+            旅行の基本情報
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            いつ、どのくらいの期間旅行されますか？
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-slate-700">旅行時期</Label>
+            <div className="animate-pulse">
+              <div className="h-10 bg-slate-200 rounded-md"></div>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-slate-700">旅行期間</Label>
+            <div className="animate-pulse grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {[...Array(10)].map((_, i) => (
+                <div key={i} className="h-12 bg-slate-200 rounded-md"></div>
+              ))}
+            </div>
+          </div>
+          <p className="text-sm text-slate-500">旅行オプションを読み込み中...</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show error state
+  if (seasonsError || durationsError) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <Calendar className="h-5 w-5 text-slate-600" />
+            旅行の基本情報
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            いつ、どのくらいの期間旅行されますか？
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">
+              旅行オプションの読み込みに失敗しました。ページを再読み込みしてください。
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="border border-slate-200 bg-white shadow-sm">
       <CardHeader>
@@ -49,7 +110,7 @@ export function Step2BasicInfo({
               <SelectValue placeholder="旅行時期を選択してください" />
             </SelectTrigger>
             <SelectContent>
-              {SEASONS.map((seasonOption) => {
+              {seasons.map((seasonOption) => {
                 const IconComponent = iconMap[seasonOption.icon as keyof typeof iconMap]
                 return (
                   <SelectItem key={seasonOption.value} value={seasonOption.value}>
@@ -71,7 +132,7 @@ export function Step2BasicInfo({
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700">旅行期間</Label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-            {DURATION_OPTIONS.map((option) => (
+            {durations.map((option) => (
               <Button
                 key={option.value}
                 variant={duration === option.value ? "default" : "outline"}
@@ -99,7 +160,7 @@ export function Step2BasicInfo({
               {season && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs">
-                    時期: {SEASONS.find(s => s.value === season)?.label}
+                    時期: {seasons.find(s => s.value === season)?.label}
                   </span>
                 </div>
               )}
@@ -107,7 +168,7 @@ export function Step2BasicInfo({
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-slate-500" />
                   <span className="text-xs">
-                    期間: {DURATION_OPTIONS.find(d => d.value === duration)?.label}
+                    期間: {durations.find(d => d.value === duration)?.label}
                   </span>
                 </div>
               )}

@@ -9,7 +9,7 @@ import {
   ScrollText, Leaf, UtensilsCrossed, Paintbrush, Building, Church, PartyPopper, ShoppingCart,
   Coins, CreditCard, Gem, Library
 } from "lucide-react"
-import { TRAVEL_PURPOSES, INTERESTS, BUDGET_LEVELS, CULTURAL_LEVELS, type TravelPurpose, type Interest } from "@/lib/travel-options"
+import { useTravelPurposes, useInterests, useBudgetLevels, useCulturalLevels, type TravelPurpose, type Interest } from "@/hooks/use-travel-options"
 
 const purposeIconMap = {
   Camera, Palette, Waves, Mountain, ChefHat, ShoppingBag, Briefcase
@@ -58,6 +58,63 @@ export function Step4TravelStyle({
   interestsError,
   budgetLevelError
 }: Step4TravelStyleProps) {
+  const { purposes: travelPurposes, loading: purposesLoading, error: purposesApiError } = useTravelPurposes()
+  const { interests: availableInterests, loading: interestsLoading, error: interestsApiError } = useInterests()
+  const { budgetLevels, loading: budgetLoading, error: budgetApiError } = useBudgetLevels()
+  const { culturalLevels, loading: culturalLoading, error: culturalApiError } = useCulturalLevels()
+
+  // Show loading state
+  if (purposesLoading || interestsLoading || budgetLoading || culturalLoading) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <Target className="h-5 w-5 text-slate-600" />
+            旅行スタイル
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            あなたの旅行の目的と興味を教えてください
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-slate-700">旅行の目的</Label>
+            <div className="animate-pulse grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[...Array(7)].map((_, i) => (
+                <div key={i} className="h-16 bg-slate-200 rounded-md"></div>
+              ))}
+            </div>
+          </div>
+          <p className="text-sm text-slate-500">旅行スタイルオプションを読み込み中...</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show error state
+  if (purposesApiError || interestsApiError || budgetApiError || culturalApiError) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <Target className="h-5 w-5 text-slate-600" />
+            旅行スタイル
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            あなたの旅行の目的と興味を教えてください
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">
+              旅行スタイルオプションの読み込みに失敗しました。ページを再読み込みしてください。
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="border border-slate-200 bg-white shadow-sm">
       <CardHeader>
@@ -79,7 +136,7 @@ export function Step4TravelStyle({
             </Badge>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {TRAVEL_PURPOSES.map((purpose) => {
+            {travelPurposes.map((purpose) => {
               const isSelected = purposes.includes(purpose.value)
               const canSelect = purposes.length < 3 || isSelected
               const IconComponent = purposeIconMap[purpose.icon as keyof typeof purposeIconMap]
@@ -125,7 +182,7 @@ export function Step4TravelStyle({
             </Badge>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-            {INTERESTS.map((interest) => {
+            {availableInterests.map((interest) => {
               const isSelected = interests.includes(interest.value)
               const canSelect = interests.length < 5 || isSelected
               const IconComponent = interestIconMap[interest.icon as keyof typeof interestIconMap]
@@ -162,7 +219,7 @@ export function Step4TravelStyle({
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700">予算レベル</Label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {BUDGET_LEVELS.map((budget) => {
+            {budgetLevels.map((budget) => {
               const IconComponent = budgetIconMap[budget.icon as keyof typeof budgetIconMap]
               return (
                 <Button
@@ -194,7 +251,7 @@ export function Step4TravelStyle({
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700">文化情報の詳しさ</Label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {CULTURAL_LEVELS.map((level) => {
+            {culturalLevels.map((level) => {
               const IconComponent = culturalIconMap[level.icon as keyof typeof culturalIconMap] || BookOpen
               return (
                 <Button
@@ -245,7 +302,7 @@ export function Step4TravelStyle({
                   </div>
                   <div className="flex flex-wrap gap-1 ml-6">
                     {purposes.map(purpose => {
-                      const purposeData = TRAVEL_PURPOSES.find(p => p.value === purpose)
+                      const purposeData = travelPurposes.find(p => p.value === purpose)
                       return (
                         <Badge key={purpose} variant="secondary" className="text-xs">
                           {purposeData?.icon} {purposeData?.label}
@@ -264,7 +321,7 @@ export function Step4TravelStyle({
                   </div>
                   <div className="flex flex-wrap gap-1 ml-6">
                     {interests.map(interest => {
-                      const interestData = INTERESTS.find(i => i.value === interest)
+                      const interestData = availableInterests.find(i => i.value === interest)
                       return (
                         <Badge key={interest} variant="secondary" className="text-xs">
                           {interestData?.icon} {interestData?.label}
@@ -280,8 +337,8 @@ export function Step4TravelStyle({
                   <DollarSign className="h-4 w-4" />
                   <span className="font-medium">予算:</span>
                   <span>
-                    {BUDGET_LEVELS.find(b => b.value === budgetLevel)?.label}
-                    ({BUDGET_LEVELS.find(b => b.value === budgetLevel)?.range})
+                    {budgetLevels.find(b => b.value === budgetLevel)?.label}
+                    ({budgetLevels.find(b => b.value === budgetLevel)?.range})
                   </span>
                 </div>
               )}
@@ -291,7 +348,7 @@ export function Step4TravelStyle({
                   <BookOpen className="h-4 w-4" />
                   <span className="font-medium">文化情報:</span>
                   <span>
-                    {CULTURAL_LEVELS.find(c => c.value === culturalLevel)?.label}
+                    {culturalLevels.find(c => c.value === culturalLevel)?.label}
                   </span>
                 </div>
               )}

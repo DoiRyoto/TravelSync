@@ -9,8 +9,8 @@ import {
   ScrollText, Leaf, UtensilsCrossed, Paintbrush, Building, Church, PartyPopper, ShoppingCart,
   Coins, CreditCard, Gem, Library, Flower, Sun, Snowflake, CalendarDays
 } from "lucide-react"
-import { allCountries } from "@/lib/countries"
-import { SEASONS, DURATION_OPTIONS, TRAVELER_TYPES, AGE_GROUPS, EXPERIENCE_LEVELS, TRAVEL_PURPOSES, INTERESTS, BUDGET_LEVELS, CULTURAL_LEVELS } from "@/lib/travel-options"
+import { useCountries } from "@/hooks/use-countries"
+import { useTravelOptions } from "@/hooks/use-travel-options"
 
 const iconMap = {
   User, Heart, Users, UserPlus, Briefcase,
@@ -48,14 +48,70 @@ export function Step5Confirmation({
   loading,
   onSubmit
 }: Step5ConfirmationProps) {
-  const destination = allCountries.find(c => c.id === formData.destination)
-  const season = SEASONS.find(s => s.value === formData.season)
-  const duration = DURATION_OPTIONS.find(d => d.value === formData.duration)
-  const travelerType = TRAVELER_TYPES.find(t => t.value === formData.travelerType)
-  const ageGroup = AGE_GROUPS.find(a => a.value === formData.ageGroup)
-  const experienceLevel = EXPERIENCE_LEVELS.find(e => e.value === formData.experienceLevel)
-  const budgetLevel = BUDGET_LEVELS.find(b => b.value === formData.budgetLevel)
-  const culturalLevel = CULTURAL_LEVELS.find(c => c.value === formData.culturalLevel)
+  const { countries, loading: countriesLoading, error: countriesError } = useCountries()
+  const { options, loading: optionsLoading, error: optionsError } = useTravelOptions()
+
+  // Show loading state
+  if (countriesLoading || optionsLoading) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <CheckCircle className="h-5 w-5 text-slate-600" />
+            プラン内容の確認
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            入力内容を確認して、旅行プランを作成しましょう
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-20 bg-slate-200 rounded-md"></div>
+            <div className="h-20 bg-slate-200 rounded-md"></div>
+            <div className="h-20 bg-slate-200 rounded-md"></div>
+          </div>
+          <p className="text-sm text-slate-500">確認内容を読み込み中...</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Show error state
+  if (countriesError || optionsError) {
+    return (
+      <Card className="border border-slate-200 bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-slate-900">
+            <CheckCircle className="h-5 w-5 text-slate-600" />
+            プラン内容の確認
+          </CardTitle>
+          <CardDescription className="text-slate-600">
+            入力内容を確認して、旅行プランを作成しましょう
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">
+              確認データの読み込みに失敗しました。ページを再読み込みしてください。
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (!options) {
+    return null
+  }
+
+  const destination = countries.find(c => c.id === formData.destination)
+  const season = options.seasons.find(s => s.value === formData.season)
+  const duration = options.durations.find(d => d.value === formData.duration)
+  const travelerType = options.travelerTypes.find(t => t.value === formData.travelerType)
+  const ageGroup = options.ageGroups.find(a => a.value === formData.ageGroup)
+  const experienceLevel = options.experienceLevels.find(e => e.value === formData.experienceLevel)
+  const budgetLevel = options.budgetLevels.find(b => b.value === formData.budgetLevel)
+  const culturalLevel = options.culturalLevels.find(c => c.value === formData.culturalLevel)
 
   return (
     <Card className="border border-slate-200 bg-white shadow-sm">
@@ -167,7 +223,7 @@ export function Step5Confirmation({
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.purposes.map(purpose => {
-                  const purposeData = TRAVEL_PURPOSES.find(p => p.value === purpose)
+                  const purposeData = options.purposes.find(p => p.value === purpose)
                   return (
                     <Badge key={purpose} className="bg-purple-100 text-purple-800 hover:bg-purple-200">
                       <span className="mr-1">{purposeData?.icon}</span>
@@ -185,7 +241,7 @@ export function Step5Confirmation({
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.interests.map(interest => {
-                  const interestData = INTERESTS.find(i => i.value === interest)
+                  const interestData = options.interests.find(i => i.value === interest)
                   return (
                     <Badge key={interest} variant="secondary">
                       <span className="mr-1">{interestData?.icon}</span>
